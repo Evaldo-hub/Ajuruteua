@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contagem Regressiva: Operação Pé na Areia 🏖️</title>
+    <meta name="description" content="Contagem regressiva para nossa viagem à praia!">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Efeito de ondas no fundo */
+        .waves {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.3' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+            animation: wave 10s linear infinite;
+        }
+
+        .wave:nth-child(2) {
+            bottom: 10px;
+            animation: wave 7s linear infinite reverse;
+            opacity: 0.5;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+            padding: 30px 20px;
+        }
+
+        .emoji-header {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            color: #fff9c4;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.1);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .countdown-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .countdown-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .countdown-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+
+        .countdown-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .countdown-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #fff9c4;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .destination-info {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .destination-emoji {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .destination-name {
+            color: #ffffff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+        }
+
+        .destination-date {
+            color: #fff9c4;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        /* Foto do Local */
+        .location-photo {
+            margin-top: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .location-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* Destaque Pagamento */
+        .payment-deadline {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
+            border: 2px solid rgba(255,255,255,0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .deadline-emoji {
+            font-size: 2.5rem;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .deadline-text {
+            text-align: center;
+        }
+
+        .deadline-title {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+        }
+
+        .deadline-subtitle {
+            color: #fff9c4;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .share-button {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .share-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .share-button:active {
+            transform: translateY(0);
+        }
+
+        /* Estado quando o contador zerar */
+        .celebration {
+            display: none;
+            animation: celebrate 0.5s ease;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .celebration-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 2px 2px 20px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .celebration-emoji {
+            font-size: 5rem;
+            animation: bounce 1s ease infinite;
+        }
+
+        /* Informações Financeiras */
+        .finance-info {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .finance-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .finance-emoji {
+            font-size: 2rem;
+        }
+
+        .finance-title {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .finance-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .finance-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .finance-row:last-child {
+            border-bottom: none;
+        }
+
+        .finance-row.highlight {
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+
+        .finance-label {
+            color: #fff9c4;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .finance-value {
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .finance-row.highlight .finance-value {
+            color: #ffd700;
+            font-size: 1.1rem;
+        }
+
+        .pix-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+        }
+
+        .pix-label {
+            color: #fff9c4;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .pix-value {
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        /* Lista de Participantes */
+        .participants-section {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .participants-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .participants-emoji {
+            font-size: 2rem;
+        }
+
+        .participants-title {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .participant-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .participant-card:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.25);
+        }
+
+        .participant-name {
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            word-wrap: break-word;
+        }
+
+        .participant-value {
+            color: #fff9c4;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .participant-kit {
+            color: #4ade80;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 3px;
+        }
+
+        .legend {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .legend-item {
+            color: #fff9c4;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Scrollbar personalizada */
+        .participants-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .participants-grid::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        .participants-grid::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+
+        /* Responsivo para mobile */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+                padding: 12px 20px;
+            }
+
+            .countdown-container {
+                gap: 10px;
+            }
+
+            .countdown-card {
+                padding: 15px 8px;
+            }
+
+            .countdown-number {
+                font-size: 2rem;
+            }
+
+            .countdown-label {
+                font-size: 0.65rem;
+            }
+
+            .destination-name {
+                font-size: 1.2rem;
+            }
+
+            .emoji-header {
+                font-size: 3rem;
+            }
+
+            .finance-info, .participants-section {
+                padding: 20px;
+            }
+
+            .participants-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-height: 300px;
+            }
+
+            .participant-name {
+                font-size: 0.8rem;
+            }
+
+            .participant-value {
+                font-size: 0.75rem;
+            }
+
+            .location-photo {
+                margin-top: 15px;
+                border-radius: 15px;
+            }
+
+            .payment-deadline {
+                margin-top: 15px;
+                padding: 15px;
+            }
+
+            .deadline-emoji {
+                font-size: 2rem;
+            }
+
+            .deadline-title {
+                font-size: 1.1rem;
+            }
+
+            .deadline-subtitle {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .countdown-number {
+                font-size: 1.8rem;
+            }
+
+            .countdown-card {
+                padding: 12px 5px;
+            }
+
+            .participants-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Efeito de ondas -->
+    <div class="waves">
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <div class="container">
+        <div class="emoji-header">🏖️</div>
+        
+        <h1>Contagem Regressiva: Operação Pé na Areia</h1>
+        
+        <div class="subtitle">
+            <!-- Subtítulo personalizável -->
+            <span id="customSubtitle">Faltam poucos dias para nossa aventura!</span>
+        </div>
+
+        <!-- Contador -->
+        <div class="countdown-container" id="countdown">
+            <div class="countdown-card">
+                <div class="countdown-number" id="days">00</div>
+                <div class="countdown-label">Dias</div>
+            </div>
+            <div class="countdown-card">
+                <div class="countdown-number" id="hours">00</div>
+                <div class="countdown-label">Horas</div>
+            </div>
+            <div class="countdown-card">
+                <div class="countdown-number" id="minutes">00</div>
+                <div class="countdown-label">Minutos</div>
+            </div>
+            <div class="countdown-card">
+                <div class="countdown-number" id="seconds">00</div>
+                <div class="countdown-label">Segundos</div>
+            </div>
+        </div>
+
+        <!-- Mensagem de celebração (quando o contador zerar) -->
+        <div class="celebration" id="celebration">
+            <div class="celebration-emoji">🌊☀️</div>
+            <div class="celebration-text">Partiu Praia!</div>
+        </div>
+
+        <!-- Informações do destino -->
+        <div class="destination-info">
+            <div class="destination-emoji">📍</div>
+            <div class="destination-name" id="destinationName">Praia de Jericoacoara</div>
+            <div class="destination-date" id="destinationDate">20 de Julho de 2026</div>
+        </div>
+
+        <!-- Foto do Local -->
+        <div class="location-photo">
+            <img src="IMAGEM/image.jfif" alt="Praia de Ajuruteua" class="location-image">
+        </div>
+
+        <!-- Destaque Pagamento -->
+        <div class="payment-deadline">
+            <div class="deadline-emoji">⚠️</div>
+            <div class="deadline-text">
+                <div class="deadline-title">PAGAMENTO ATÉ DIA 15</div>
+                <div class="deadline-subtitle">Não deixe para a última hora!</div>
+            </div>
+        </div>
+
+        <!-- Informações Financeiras -->
+        <div class="finance-info">
+            <div class="finance-header">
+                <span class="finance-emoji">💰</span>
+                <span class="finance-title">Informações da Viagem</span>
+            </div>
+            
+            <div class="finance-details">
+                <div class="finance-row">
+                    <span class="finance-label">📅 Hospedagem:</span>
+                    <span class="finance-value">24 a 27 de Julho</span>
+                </div>
+                <div class="finance-row">
+                    <span class="finance-label">💵 Cota por pessoa:</span>
+                    <span class="finance-value">R$ 140,00</span>
+                </div>
+                <div class="finance-row">
+                    <span class="finance-label">🏠 Aluguel total:</span>
+                    <span class="finance-value">R$ 4.200,00</span>
+                </div>
+                <div class="finance-row">
+                    <span class="finance-label">📥 Entrada:</span>
+                    <span class="finance-value">R$ 2.160,00</span>
+                </div>
+                <div class="finance-row">
+                    <span class="finance-label">✅ Pago 50%:</span>
+                    <span class="finance-value">R$ 2.100,00</span>
+                </div>
+                <div class="finance-row highlight">
+                    <span class="finance-label">💳 Saldo:</span>
+                    <span class="finance-value">R$ 950,00</span>
+                </div>
+            </div>
+
+            <div class="pix-info">
+                <span class="pix-label">📱 Pix:</span>
+                <span class="pix-value">Agorasimleo@gmail.com</span>
+            </div>
+        </div>
+
+        <!-- Lista de Participantes -->
+        <div class="participants-section">
+            <div class="participants-header">
+                <span class="participants-emoji">👥</span>
+                <span class="participants-title">Participantes (35)</span>
+            </div>
+            
+            <div class="participants-grid" id="participantsList">
+                <!-- Participantes serão carregados via JavaScript -->
+            </div>
+            
+            <div class="legend">
+                <span class="legend-item">✅ = Pagou o kit</span>
+            </div>
+        </div>
+
+        <button class="share-button" onclick="shareOnWhatsApp()">
+            <span>📱</span> Compartilhar no WhatsApp
+        </button>
+    </div>
+
+    <script>
+        // ========================================
+        // ⚙️ CONFIGURAÇÕES - ALTERE AQUI
+        // ========================================
+        
+        // Data e hora final do evento (Formato: "Mês Dia, Ano Hora:Minuto")
+        // Exemplo: "July 24, 2026 16:00" para 24 de Julho de 2026 às 16:00
+        const TARGET_DATE = "July 24, 2026 16:00";
+        
+        // Nome do destino
+        const DESTINATION = "Praia de Ajuruteua";
+        
+        // Data formatada para exibição
+        const DISPLAY_DATE = "24 de Julho de 2026 às 16:00";
+        
+        // Subtítulo personalizado
+        const SUBTITLE = "Faltam poucos dias para nossa aventura!";
+        
+        // Lista de participantes
+        const PARTICIPANTS = [
+            { name: "Bacinho", value: "R$ 140,00", kit: true },
+            { name: "Americo", value: "R$ 140,00", kit: true },
+            { name: "Mery", value: "R$ 140,00", kit: true },
+            { name: "Mayara", value: "R$ 140,00", kit: true },
+            { name: "Serginho", value: "R$ 90,00", kit: false },
+            { name: "Belle", value: "R$ 90,00", kit: false },
+            { name: "Ana Bella", value: "R$ 90,00", kit: false },
+            { name: "Anderson", value: "R$ 100,00", kit: false },
+            { name: "Lurdes", value: "R$ 70,00", kit: false },
+            { name: "Neves", value: "R$ 50,00", kit: false },
+            { name: "Ligia", value: "R$ 70,00", kit: false },
+            { name: "Luiza", value: "R$ 70,00", kit: false },
+            { name: "Lídia", value: "R$ 50,00", kit: false },
+            { name: "Renan", value: "R$ 50,00", kit: false },
+            { name: "Sophia e Mário", value: "R$ 70,00", kit: false },
+            { name: "Bia", value: "R$ 50,00", kit: false },
+            { name: "Joelson", value: "R$ 50,00", kit: false },
+            { name: "Breno", value: "R$ 50,00", kit: false },
+            { name: "Pedro", value: "R$ 50,00", kit: false },
+            { name: "Maru", value: "R$ 140,00", kit: true },
+            { name: "Lurdinha", value: "R$ 140,00", kit: true },
+            { name: "Lene", value: "R$ 140,00", kit: true },
+            { name: "Rosy", value: "R$ 70,00", kit: false },
+            { name: "Jefferson", value: "R$ 50,00", kit: false },
+            { name: "Elisangela", value: "R$ 50,00", kit: false },
+            { name: "Daniel", value: "R$ 50,00", kit: false },
+            { name: "Benicio", value: "R$ 50,00", kit: false },
+            { name: "Léia", value: "R$ 140,00", kit: true },
+            { name: "Jackson", value: "R$ 140,00", kit: true },
+            { name: "xxxxxxx", value: "R$ 100,00", kit: false },
+            { name: "Rosinha", value: "R$ 140,00", kit: true },
+            { name: "Ducarmo", value: "R$ 140,00", kit: true },
+            { name: "Samira", value: "A definir", kit: false },
+            { name: "Marcelo", value: "A definir", kit: false },
+            { name: "Edylena (Amiga Bia)", value: "R$ 140,00", kit: true }
+        ];
+        
+        // ========================================
+        // 🎯 CÓDIGO DO CONTADOR
+        // ========================================
+
+        // Atualizar informações na página
+        document.getElementById('destinationName').textContent = DESTINATION;
+        document.getElementById('destinationDate').textContent = DISPLAY_DATE;
+        document.getElementById('customSubtitle').textContent = SUBTITLE;
+
+        // Carregar lista de participantes
+        function loadParticipants() {
+            const container = document.getElementById('participantsList');
+            container.innerHTML = '';
+            
+            PARTICIPANTS.forEach((participant, index) => {
+                const card = document.createElement('div');
+                card.className = 'participant-card';
+                
+                const name = document.createElement('div');
+                name.className = 'participant-name';
+                name.textContent = `${index + 1} - ${participant.name}`;
+                
+                const value = document.createElement('div');
+                value.className = 'participant-value';
+                value.textContent = participant.value;
+                
+                card.appendChild(name);
+                card.appendChild(value);
+                
+                if (participant.kit) {
+                    const kit = document.createElement('div');
+                    kit.className = 'participant-kit';
+                    kit.textContent = '✅ Kit pago';
+                    card.appendChild(kit);
+                }
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Carregar participantes ao iniciar
+        loadParticipants();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const target = new Date(TARGET_DATE).getTime();
+            const distance = target - now;
+
+            if (distance < 0) {
+                // Contador zerou - mostrar celebração
+                document.getElementById('countdown').style.display = 'none';
+                document.getElementById('celebration').style.display = 'block';
+                document.getElementById('celebration').classList.add('celebration');
+                return;
+            }
+
+            // Calcular tempo restante
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Atualizar display com zeros à esquerda
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        // Atualizar contador a cada segundo
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Função para compartilhar no WhatsApp
+        function shareOnWhatsApp() {
+            const text = `🏖️ Contagem Regressiva: Operação Pé na Areia!\n\n📍 Destino: ${DESTINATION}\n📅 Data: ${DISPLAY_DATE}\n\nAcompanhe o contador em tempo real!`;
+            const url = encodeURIComponent(window.location.href);
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}%20${url}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
